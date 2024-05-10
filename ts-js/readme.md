@@ -17,7 +17,7 @@ async function fetchTxMempool(scenarioId: string): Promise<MempoolItem[]> {
 
 // get the transaction data from threadbag
 const tx_list = await fetchTxMempool(scenario_id);
-
+const raw_tx = tx_list[0]; // take the first tx
 // decode the transaction to a Polkadot SubmittableExtrinsic:  import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 const decodedTx = await api.registry.createType('Extrinsic', raw_tx);
 
