@@ -1,5 +1,53 @@
 # Javascript and Typescript examples    
 
+## Typescript example:   
+```ts
+// fetch transaction list from threadbag
+async function fetchTxMempool(scenarioId: string): Promise<MempoolItem[]> {
+    try {
+        const response: AxiosResponse<TxMempoolResponse> = await axios.post(`${base}/scenario/tx`, {
+            id: scenarioId
+        });
+        return response.data.mempool;
+    } catch (error) {
+        console.error('Error fetching threadbag transaction mempool:', error);
+        throw error;
+    }
+}
+
+// get the transaction data from threadbag
+const tx_list = await fetchTxMempool(scenario_id);
+
+// decode the transaction to a Polkadot SubmittableExtrinsic:  import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+const decodedTx = await api.registry.createType('Extrinsic', raw_tx);
+
+// verify transaction
+
+  const decodedentry: any = l.toHuman();
+    console.log(`tx human: `, l.toHuman());
+
+    const dest_paraid = decodedentry.method.args.dest.V3.interior.X1.Parachain;
+    console.log(`Destination parachain: `, dest_paraid);
+    console.log(`Destination account: `, decodedentry.method.args.beneficiary.V3.interior.X1.AccountId32.id);
+    //console.log(`Asset: `, decodedentry.method.args.assets.V3[0].id);
+    const fun_amount = decodedentry.method.args.assets.V3[0].fun.Fungible;
+    console.log(`Asset Amount: `, fun_amount);
+    console.log(`verifying that its one dot`);
+    assert.strictEqual(fun_amount, "10,000,000,000"); // one dot with tokendecimals == 1e10
+    console.log(`one dot verified amount`);
+    console.log(`verifying dest chain is assethub `);
+    assert.strictEqual(dest_paraid, "1,000"); // one dot with tokendecimals == 1e10
+    console.log(`dest chain is assethub `);
+
+
+// sign and submit
+const tx_out =  await api.tx(decodedTx).signAndSend(sender);
+
+```
+
+
+
+
 
 ### Run:   
 ```shell
